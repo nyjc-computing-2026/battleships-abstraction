@@ -1,96 +1,65 @@
-# J1 Group Project - Battleships
+# Battleships - Abstraction and Modularization
 
-## Instructions
+The original instructions for the task can be found in [`original_instructions.md`](original_instructions.md)
 
-1. In each group, only one student creates a codespace.
-2. Click **Live Share** icon in the codespace status bar (at the bottom)  
-   ![Live Share](images/image1.png)
-3. The status will change to **Shared** and a window will appear:  
-   ![Live Share Window](images/image2.png)
-4. Copy the link and share it with your programming group members to start collaborating
-5. The team members should click on the link, then click **Accept read-write** to proceed.
+# Abstraction: Schemas and Interfaces
 
----
+The first thing you may have realised is that for a team to work together, you'll need to agree on:
 
-## Your task
+- data formats: how ships, players, hits and misses will be represented in the game data
+- interfaces: what functions should do, what type(s) they should take in, what they should return
 
-Create a single player battleship game that can be played using text input.
+You've had some training in this in the assignments, but now you need to apply it as a group.
 
-**Game Details**
--
-**A. Game Setup:**
+### Individual task
 
-1. Use a 10x10 grid as the game board. You can use `~` or any other suitable character to represent empty spaces on the board.  
-(_The following is simply a guide. Your board does not have to be exactly the same._)
-```
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
-```
-2. Four (4) boards are needed:
-   - Player's ship board (where player's ships are placed, and where enemy's strikes are marked)
-   - Player's attack board (where they guess where the computer's ships are and attempt to strike them)
-   - Computer's ship board (where computer's ships are placed, and where enemy's strikes are marked)
-   - Computer's attack board (where computer guesses where the player's ships are and attempt to strike them)
-2. Define **three** ships (1 of each of the following):
-   - **B**attleship: **4 squares**
-   - **C**ruiser: **3 squares**
-   - **D**estroyer: **2 squares**.
-3. Place ships **randomly** on the board for both player and computer, ensuring they don't overlap or extend beyond the grid. Ships can only be placed horizontally or vertically. An example is shown below:
+Determine how you will represent:
+- game boards (empty space, ships, hits and misses)
+- players (boards, ships, other player data)
+- game: turns taken by each player, maximum number of turns, et
 
-```
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-~ ~ ~ B ~ C C C ~ ~
-~ ~ ~ B ~ ~ ~ ~ ~ ~
-~ ~ ~ B ~ ~ ~ ~ ~ ~
-~ ~ ~ B ~ ~ D ~ ~ ~
-~ ~ ~ ~ ~ ~ D ~ ~ ~
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-```
 
-**B. Gameplay:**
+# Abstraction: Chunking functions
 
-1. Allow the player a specified number of turns (default: 30) to guess the locations of the ships.
-2. Display the player's ship and attack boards. Use symbols to indicate hits (`X`) and misses (`O`).
-3. For each guess, prompt the player to input coordinates (x, y) to target a specific location on the board.
-4. Decide on the preferred input format and validate the input, displaying an error message and re-prompting the player where necessary. For valid guesses, check if it's a hit or miss.
-5. If it is a hit, display the type of ship that was hit and allow the player to make an additional guess without using a turn.
-6. A ship is considered sunk when all its (accompanying) cells have been hit.
-7. Update the game board accordingly to reflect the outcome.
-8. Continue until the player has used up all their turns or has sunk all the ships.
+With that done, it's tempting to jump right in and begin coding. Without a plan, it's easy to get lost in the weeds and forget what you were initially trying to do.
 
-**C. End of Game:**
+For a game, we usually start with the game loop:
+- what are the individual tasks that need to be done for each part of the game?
+- how do we "package" this requirement into a function?
 
-1. If the player successfully sinks all the opponent's ships within the specified number of turns, declare victory.
-2. If the player runs out of turns before sinking all the ships, declare defeat and reveal the locations of the remaining ships.
-3. Display the computer's ship board with all ship locations and outcomes.
-4. End the game (exit the program).
+A technique that can help at this stage is "_hallucination_": _pretend_ the function you need exists. What would it be called? What would it take in, and what would it do and/or return? Instead of writing the main loop with the details of everything you were trying to do, Write your code as though those functions exist, and use them to *describe* what you are trying to do instead of doing it.
 
-**D. Additional Features (optional):**
+This naturally chunks the project into individual tasks that you can work on as a group.
 
-1. Implement difficulty levels with varying grid sizes and ship configurations.
-2. Allow the player to choose the number of turns or adjust other game parameters.
-3. Keep track of the player's score, in a **scores.txt** file, based on the number of turns taken to sink all the ships.
+### Individual task
 
-### Legend
+#### Write the game loop.  
 
-Use the appropriate symbols to display the type of ship that has been hit
+**Do not:**
+- mutate data directly (no string concatenation or list mutation)
+- access data directly from a list or string (no string/list slicing, indexing etc)
 
-+ `B`: Battleship
-+ `C`: Cruiser
-+ `D`: Destroyer
-+ `#`: Miss
+This practice forces you to step away from the concrete details, and look at the purpose/intention: what effect are you trying to achieve?
 
-## After the project
+#### Write function docstrings and annotations for the hallucinated functions
 
-What challenges did you face trying to write working code as a group?
+Next, look at the functions you hallucinated. Write the docstrings and annotations.
+
+This practice forces you to think through the data schemas you came up with earlier, and edit them so that they serve the project. It also forces you to think about function scope: is a particular function doing too much?
+
+# Abstraction: Modularization
+
+Analyze the interface of the functions you wrote earlier.
+
+1. Do any of them rely on a particular data structure? If they take in board data, or player data, those functions will rely on the implementation details.
+2. Are any of them helper functions? E.g. functions for generating random coordinates, formatting text.
+
+### Individual task
+
+Determine how the functions can be bundled into modules in a way that makes the code more readable. This reduces the number of function definitions in `main.py`, and makes it easier to collaborate: you can have individual team members work on a module without affecting the main program.
+
+# Putting it all together: game testing
+
+How would you test that each of these modules/functions is doing the correct thing?
+
+Initially you might do some manual testing, running the game and entering inputs manually to visually inspect of the result is correct. But this gets tiring quickly. Think about how you could automate this part: instead of relying on manual input, is there a way to write the actions you take as code instead, so you can run it as a test?
