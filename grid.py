@@ -35,7 +35,15 @@ def display_grid(grid: list[list[str]]) -> None:
 
 
 def initialize_grid(grid: list[list[str]], ships: list[str]) -> None:
-    """Initialize the grid by placing ships randomly on the grid."""
+    """Initialize the grid by placing ships randomly on the grid.
+
+    Arguments:
+        grid: list[list[str]] -- the game grid to initialize
+        ships: list[str] -- a list of ship symbols to place on the grid
+    
+    Returns:
+        None
+    """
     pass
 
 
